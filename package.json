@@ -1,0 +1,12 @@
+{
+  "name": "noobify",
+  "version": "0.0.1",
+  "description": "Just an simple shopify theme dev helper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
