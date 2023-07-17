@@ -1,3 +1,6 @@
+# Custom
+src
+
 # Logs
 logs
 *.log
@@ -78,6 +81,7 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+noobify.theme.txt
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
