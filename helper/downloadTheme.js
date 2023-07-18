@@ -40,28 +40,34 @@ export default async function downloadTheme({ store, themeid, accessToken }) {
           }
         );
 
-        const assetValue = assetResponse.data.asset.value;
+        const assetData = assetResponse.data.asset;
+        const outputPath = path.join("src", asset.key);
+        mkdirSync(path.dirname(outputPath), { recursive: true });
 
-        if (assetValue) {
-          const outputPath = path.join("src", asset.key);
-          mkdirSync(path.dirname(outputPath), { recursive: true });
+        let writer;
 
-          const writer = createWriteStream(outputPath);
-          writer.write(assetValue);
+        if (assetData.attachment) {
+          const buffer = Buffer.from(assetData.attachment, "base64");
+          writer = createWriteStream(outputPath);
+          writer.write(buffer);
           writer.end();
-
-          await new Promise((resolve) => {
-            writer.on("finish", resolve);
-            writer.on("error", (error) => {
-              console.error(`Error writing asset ${asset.key} to file:`, error);
-              resolve(); // Resolve even if there's an error to continue with the loop
-            });
-          });
-
-          progressBar.increment();
+        } else if (assetData.value) {
+          writer = createWriteStream(outputPath);
+          writer.write(assetData.value);
+          writer.end();
         } else {
-          console.error(`Asset ${asset.key} does not have a value.`);
+          console.error(`Asset ${asset.key} does not have a "value" or "attachment" property.`);
         }
+
+        await new Promise((resolve) => {
+          writer.on("finish", resolve);
+          writer.on("error", (error) => {
+            console.error(`Error writing asset ${asset.key} to file:`, error);
+            resolve(); // Resolve even if there's an error to continue with the loop
+          });
+        });
+
+        progressBar.increment();
       })
     );
 
